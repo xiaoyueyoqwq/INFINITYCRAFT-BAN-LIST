@@ -17,6 +17,8 @@
 
 6.玩家**huoyao_J2**（原**huoyao_J**）利用服务器漏洞再次进入服务器且屡教不改，破坏玩家 **JiangYou** 的个人财产且恶意锁定其他玩家的箱子，INFINITYCRAFT社区决定跳过审核环节直接对其进行 **永久封禁IP** 和 **个人财产强制追回并共产化** 处理<br>
 
+7.玩家**Yki_ssss**（原**huoyao_J**）**UUID：6e764abf-db9d-4fa3-9d50-206e5e12a27c** **IP：183.251.89.45** 在2023年05月22日 01:01AM左右到01:08AM左右对服务器61活动场地进行恶意破坏，损坏其他玩家已经署名的书籍，将箱子中的书本摆放成"SB"形状并放置杂乱方块破坏场地并**态度恶劣，拒绝接受调查**，进入[二审](https://forms.office.com/Pages/AnalysisPage.aspx?AnalyzerToken=ERZg9whv6NyW4cmh1CWXbti6LC7zEUew&id=f-fUQb2dFE2w_SGoF7wca8_ZTNgWfm1PiLylef3wyUBUNFZONDlRSEJKSUxEMTQ2NlUwUFVKTTZDMi4u)后社区玩家**近七成**都同意将其封禁，根据INFINITYCRAFT社区管理条例我们将对其进行**永久封禁IP** 和 **个人财产强制追回并共产化** 处理<br>
+
 *备注：回滚指回滚其玩家所有操作，包括方块放置，拿取物品等等，挽回被害人损失*<br>
 ---------------------------------------------<br>
 **最后的话：偷窃是非常可耻的行为，INFINITYCRAFT社区将会坚决抵制偷窃等恶意破坏服务器清朗环境的任何事情，如果你有什么需要的，或者喜欢的东西可以向别的玩家正当交易或者让别的玩家赠送你一个，希望各位玩家可以吸取教训不要去做一个让人恶心的fw**<br>
