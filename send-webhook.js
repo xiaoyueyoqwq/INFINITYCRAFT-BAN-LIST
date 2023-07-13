@@ -31,7 +31,7 @@ axios.get(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits
     const commitData = response.data;
 
     const payload = {
-      content: 'New commit',
+      content: '',
       embeds: [
         {
           title: 'Commit Details',
