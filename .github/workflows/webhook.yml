@@ -3,7 +3,7 @@ name: Discord Webhook
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   send-webhook:
