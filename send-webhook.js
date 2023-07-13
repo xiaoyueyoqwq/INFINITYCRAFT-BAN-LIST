@@ -9,11 +9,20 @@ const generateChangesList = (changes) => {
   }
 
   return changes.map((change) => {
-    const { filename, additions, deletions, changes } = change;
+    const { filename, additions, deletions, changes, patch } = change;
     const action = additions > 0 ? 'Added' : deletions > 0 ? 'Deleted' : 'Modified';
     const changeInfo = `${changes} changes: ${additions} additions & ${deletions} deletions`;
-    const fileChanges = change.patch.split('\n').slice(4).join('\n'); // Extract file changes text
-    return `:white_check_mark: ${filename} (${action}): ${changeInfo}\n\`\`\`diff\n${fileChanges}\n\`\`\``;
+
+    // Extract added lines from the patch
+    const addedLines = patch.split('\n').filter((line) => line.startsWith('+')).map((line) => line.slice(1));
+
+    // Construct the file change message
+    let changeMessage = `:white_check_mark: ${filename} (${action}): ${changeInfo}`;
+    if (addedLines.length > 0) {
+      changeMessage += `\nAdded lines:\n${addedLines.join('\n')}`;
+    }
+
+    return changeMessage;
   }).join('\n');
 };
 
@@ -30,6 +39,16 @@ axios.get(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits
           description: commitData.commit.message,
           color: 16777215, // White color
           fields: [
+            {
+              name: ':bust_in_silhouette: Author',
+              value: commitData.commit.author.name,
+              inline: true,
+            },
+            {
+              name: ':clock2: Date',
+              value: commitData.commit.author.date,
+              inline: true,
+            },
             {
               name: 'File Changes',
               value: generateChangesList(commitData.files),
