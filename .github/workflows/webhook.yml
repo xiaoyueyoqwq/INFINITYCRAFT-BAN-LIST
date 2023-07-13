@@ -3,50 +3,27 @@ name: Discord Webhook
 on:
   push:
     branches:
-      - main
+      - mainw
 
 jobs:
-  send-webhook:
+  sendWebhook:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check if README.md is updated
-        id: check_readme
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const files = context.payload.commits[0].added.concat(context.payload.commits[0].modified);
-            const readmeChanged = files.some(file => file.toLowerCase() === 'readme.md');
-            console.log(readmeChanged);
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-            const readmeContent = Buffer.from(context.payload.commits[0].message, 'base64').toString('utf-8');
-            console.log(readmeContent);
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
 
-            const regex = /玩家(\S+) UUID：(\S+) IP：(\S+) ([\s\S]+)处理/;
-            const matches = readmeContent.match(regex);
+    - name: Install dependencies
+      run: npm install axios
 
-            let username = '';
-            let uuid = '';
-            let ip = '';
-            let reason = '';
+    - name: Send Discord Webhook
+      run: |
+        echo ${{ secrets.DISCORD_WEBHOOK_URL }} > webhook_url.txt
+        echo "::set-env name=WEBHOOK_URL::$(cat webhook_url.txt)"
 
-            if (matches) {
-              username = 'Username: ' + matches[1];
-              uuid = 'UUID: ' + matches[2];
-              ip = 'IP: ' + matches[3];
-              reason = 'Reason: ' + matches[4].trim();
-            }
-
-            core.setOutput('readmeChanged', readmeChanged);
-            core.setOutput('username', username);
-            core.setOutput('uuid', uuid);
-            core.setOutput('ip', ip);
-            core.setOutput('reason', reason);
-
-      - name: Send Webhook
-        if: steps.check_readme.outputs.readmeChanged == 'true'
-        run: |
-          curl -H "Content-Type: application/json" -X POST -d '{
-            "content": "README.md Update\n\nData from README.md:\n- '"${{ steps.check_readme.outputs.username }}"'\n- '"${{ steps.check_readme.outputs.uuid }}"'\n- '"${{ steps.check_readme.outputs.ip }}"'\n\nReason:\n'"${{ steps.check_readme.outputs.reason }}"'"
-          }' ${{ secrets.DISCORD_WEBHOOK_URL }}
+        node send-webhook.js
