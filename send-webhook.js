@@ -19,15 +19,17 @@ const generateChangesList = (changes) => {
     // Construct the file change message
     let changeMessage = `:white_check_mark: ${filename} (${action}): ${changeInfo}`;
     if (addedLines.length > 0) {
-      changeMessage += '\nAdded lines:';
+      changeMessage += '\nAdded lines:\n```';
       addedLines.forEach((line) => {
-        changeMessage += `\n\`\`\`\n${line}\n\`\`\``;
+        changeMessage += `\n${line}`;
       });
+      changeMessage += '```';
     }
 
     return changeMessage;
   }).join('\n');
 };
+
 
 
 axios.get(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${process.env.GITHUB_SHA}`)
