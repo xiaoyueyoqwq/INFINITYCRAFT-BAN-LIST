@@ -8,13 +8,18 @@ const generateChangesList = (changes) => {
     return 'None';
   }
 
-  return changes.map((change) => `:white_check_mark: ${change}`).join('\n');
+  return changes.map((change) => {
+    const { filename, additions, deletions, changes } = change;
+    const action = additions > 0 ? 'Added' : deletions > 0 ? 'Deleted' : 'Modified';
+    const changeInfo = `${changes} changes: ${additions} additions & ${deletions} deletions`;
+    return `:white_check_mark: ${filename} (${action}): ${changeInfo}`;
+  }).join('\n');
 };
 
 axios.get(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${process.env.GITHUB_SHA}`)
   .then((response) => {
     const commitData = response.data;
-    
+
     const payload = {
       content: 'New commit',
       embeds: [
@@ -35,25 +40,14 @@ axios.get(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits
               inline: true,
             },
             {
-              name: ':heavy_plus_sign: Added Files',
-              value: generateChangesList(commitData.files.filter((file) => file.status === 'added').map((file) => file.filename)),
-              inline: true,
-            },
-            {
-              name: ':pencil: Modified Files',
-              value: generateChangesList(commitData.files.filter((file) => file.status === 'modified').map((file) => file.filename)),
-              inline: true,
-            },
-            {
-              name: ':wastebasket: Deleted Files',
-              value: generateChangesList(commitData.files.filter((file) => file.status === 'removed').map((file) => file.filename)),
-              inline: true,
+              name: 'File Changes',
+              value: generateChangesList(commitData.files),
             },
           ],
         },
       ],
     };
-    
+
     return axios.post(discordWebhookURL, payload);
   })
   .then(() => {
