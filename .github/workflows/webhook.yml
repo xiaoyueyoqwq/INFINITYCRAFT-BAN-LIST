@@ -22,8 +22,6 @@ jobs:
       run: npm install axios
 
     - name: Send Discord Webhook
-      run: |
-        echo ${{ secrets.DISCORD_WEBHOOK_URL }} > webhook_url.txt
-        echo "::set-env name=WEBHOOK_URL::$(cat webhook_url.txt)"
-
-        node send-webhook.js
+      env:
+        WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      run: node send-webhook.js
