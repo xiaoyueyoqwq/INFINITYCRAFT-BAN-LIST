@@ -32,4 +32,5 @@ axios.post(webhookUrl, requestData)
   })
   .catch(error => {
     console.error('Error sending webhook', error);
+    process.exit(1); // Terminate the script with a non-zero exit code on error
   });
