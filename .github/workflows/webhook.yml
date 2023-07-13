@@ -46,16 +46,7 @@ jobs:
 
       - name: Send Webhook
         if: steps.check_readme.outputs.readmeChanged == 'true'
-        uses: appleboy/discord-action@0.0.3
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: |
-            **README.md Update**
-            
-            Data from README.md:
-            - ${ steps.check_readme.outputs.username }
-            - ${ steps.check_readme.outputs.uuid }
-            - ${ steps.check_readme.outputs.ip }
-            
-            Reason:
-            ${ steps.check_readme.outputs.reason }
+        run: |
+          curl -H "Content-Type: application/json" -X POST -d '{
+            "content": "README.md Update\n\nData from README.md:\n- '"${{ steps.check_readme.outputs.username }}"'\n- '"${{ steps.check_readme.outputs.uuid }}"'\n- '"${{ steps.check_readme.outputs.ip }}"'\n\nReason:\n'"${{ steps.check_readme.outputs.reason }}"'"
+          }' ${{ secrets.DISCORD_WEBHOOK_URL }}
