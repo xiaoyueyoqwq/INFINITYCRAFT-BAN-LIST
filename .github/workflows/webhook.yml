@@ -45,7 +45,7 @@ jobs:
 
       - name: Send Webhook
         if: steps.check_readme.outputs.readmeChanged == 'true'
-        uses: discord/send-message-action@v1
+        uses: appleboy/discord-action@0.0.3
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           message: |
