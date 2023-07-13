@@ -22,46 +22,39 @@ jobs:
             const readmeContent = Buffer.from(github.context.payload.commits[0].message, 'base64').toString('utf-8');
             console.log(readmeContent);
 
-            const regex = /玩家(\S+) UUID：(\S+) IP：(\S+)/;
+            const regex = /玩家(\S+) UUID：(\S+) IP：(\S+) ([\s\S]+)处理/;
             const matches = readmeContent.match(regex);
 
             let username = '';
             let uuid = '';
             let ip = '';
+            let reason = '';
 
             if (matches) {
               username = 'Username: ' + matches[1];
               uuid = 'UUID: ' + matches[2];
               ip = 'IP: ' + matches[3];
+              reason = 'Reason: ' + matches[4].trim();
             }
 
             core.setOutput('readmeChanged', readmeChanged);
             core.setOutput('username', username);
             core.setOutput('uuid', uuid);
             core.setOutput('ip', ip);
+            core.setOutput('reason', reason);
 
       - name: Send Webhook
         if: steps.check_readme.outputs.readmeChanged == 'true'
-        uses: thediscordbot/github-actions-discord-webhook@v2.1
+        uses: discord/send-message-action@v1
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          embeds: |
-            [
-              {
-                "title": "README.md Update",
-                "description": "Data from README.md",
-                "color": 16711680,
-                "fields": [
-                  {
-                    "name": ${{ steps.check_readme.outputs.username }},
-                    "value": ${{ steps.check_readme.outputs.uuid }},
-                    "inline": true
-                  },
-                  {
-                    "name": ${{ steps.check_readme.outputs.ip }},
-                    "value": "",
-                    "inline": true
-                  }
-                ]
-              }
-            ]
+          message: |
+            **README.md Update**
+            
+            Data from README.md:
+            - ${ steps.check_readme.outputs.username }
+            - ${ steps.check_readme.outputs.uuid }
+            - ${ steps.check_readme.outputs.ip }
+            
+            Reason:
+            ${ steps.check_readme.outputs.reason }
