@@ -11,46 +11,51 @@ const generateChangesList = (changes) => {
   return changes.map((change) => `:white_check_mark: ${change}`).join('\n');
 };
 
-const payload = {
-  content: 'New commit',
-  embeds: [
-    {
-      title: 'Commit Details',
-      url: commitURL,
-      description: 'New commit has been made to the repository.',
-      color: 16777215, // White color
-      fields: [
+axios.get(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${process.env.GITHUB_SHA}`)
+  .then((response) => {
+    const commitData = response.data;
+    
+    const payload = {
+      content: 'New commit',
+      embeds: [
         {
-          name: ':pencil2: Commit Message',
-          value: process.env.GITHUB_COMMIT_MESSAGE,
-        },
-        {
-          name: ':bust_in_silhouette: Author',
-          value: process.env.GITHUB_ACTOR,
-          inline: true,
-        },
-        {
-          name: ':heavy_plus_sign: Added Files',
-          value: generateChangesList(process.env.GITHUB_ADDED_FILES.split('\n')),
-          inline: true,
-        },
-        {
-          name: ':pencil: Modified Files',
-          value: generateChangesList(process.env.GITHUB_MODIFIED_FILES.split('\n')),
-          inline: true,
-        },
-        {
-          name: ':wastebasket: Deleted Files',
-          value: generateChangesList(process.env.GITHUB_DELETED_FILES.split('\n')),
-          inline: true,
+          title: 'Commit Details',
+          url: commitURL,
+          description: commitData.commit.message,
+          color: 16777215, // White color
+          fields: [
+            {
+              name: ':bust_in_silhouette: Author',
+              value: commitData.commit.author.name,
+              inline: true,
+            },
+            {
+              name: ':clock2: Date',
+              value: commitData.commit.author.date,
+              inline: true,
+            },
+            {
+              name: ':heavy_plus_sign: Added Files',
+              value: generateChangesList(commitData.files.filter((file) => file.status === 'added').map((file) => file.filename)),
+              inline: true,
+            },
+            {
+              name: ':pencil: Modified Files',
+              value: generateChangesList(commitData.files.filter((file) => file.status === 'modified').map((file) => file.filename)),
+              inline: true,
+            },
+            {
+              name: ':wastebasket: Deleted Files',
+              value: generateChangesList(commitData.files.filter((file) => file.status === 'removed').map((file) => file.filename)),
+              inline: true,
+            },
+          ],
         },
       ],
-    },
-  ],
-};
-
-axios
-  .post(discordWebhookURL, payload)
+    };
+    
+    return axios.post(discordWebhookURL, payload);
+  })
   .then(() => {
     console.log('Discord webhook notification sent successfully.');
   })
