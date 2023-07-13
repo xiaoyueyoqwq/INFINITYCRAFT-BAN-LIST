@@ -16,7 +16,7 @@ const embedData = {
   fields: [
     {
       name: 'Commit',
-      value: commitMessage,
+      value: commitMessage || 'No commit.',
     },
   ],
   color: 16711680, // Red color
