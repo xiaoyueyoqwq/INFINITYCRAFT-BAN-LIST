@@ -12,14 +12,15 @@ jobs:
     steps:
       - name: Check if README.md is updated
         id: check_readme
-        uses: actions/github-script@v4
+        uses: actions/github-script@v3
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const files = github.context.payload.commits[0].added.concat(github.context.payload.commits[0].modified);
+            const files = context.payload.commits[0].added.concat(context.payload.commits[0].modified);
             const readmeChanged = files.some(file => file.toLowerCase() === 'readme.md');
             console.log(readmeChanged);
 
-            const readmeContent = Buffer.from(github.context.payload.commits[0].message, 'base64').toString('utf-8');
+            const readmeContent = Buffer.from(context.payload.commits[0].message, 'base64').toString('utf-8');
             console.log(readmeContent);
 
             const regex = /玩家(\S+) UUID：(\S+) IP：(\S+) ([\s\S]+)处理/;
